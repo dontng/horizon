@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+repos=(
+  "english2-daily"
+  "408-from-44"
+  "reading"
+  "math2-daily"
+)
+
+echo "[horizon]"
+"$root/scripts/hgit" pull --ff-only
+
+for repo in "${repos[@]}"; do
+  echo
+  echo "[$repo]"
+  if [ ! -d "$root/$repo/.git" ]; then
+    echo "skip: $repo is not cloned at $root/$repo"
+    continue
+  fi
+
+  git -C "$root/$repo" pull --ff-only
+done
